@@ -1,0 +1,8 @@
+require("config.lazy")
+require("config.remap")
+require("config.set")
+require("config.options")
+require("packages.lualine")
+require("packages.vague")
+require("packages.treesitter")
+require("packages.cloak")

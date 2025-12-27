@@ -1,5 +1,5 @@
 require("vague").setup {
-  transparent = false, -- don't set background
+  transparent = true, -- don't set background
   -- disable bold/italic globally in `style`
   bold = true,
   italic = true,

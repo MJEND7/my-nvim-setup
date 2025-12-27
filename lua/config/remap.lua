@@ -50,3 +50,6 @@ vim.keymap.set("n", "[g", vim.diagnostic.goto_prev)
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+-- UNDO tree
+vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)

@@ -1,26 +1,17 @@
 return {
-    {
-    'nvim-telescope/telescope.nvim', tag = 'v0.2.0',
-     dependencies = { 'nvim-lua/plenary.nvim' }
-    },
-{
-        'gelguy/wilder.nvim',
-        config = function()
-            -- config goes here
-            local wilder = require('wilder')
-            wilder.setup({ modes = { ':', '/', '?' } })
-
-            wilder.set_option('renderer', wilder.popupmenu_renderer(
-                wilder.popupmenu_border_theme({
-                    highlights = {
-                        border = 'Normal', -- highlight to use for the border
-                    },
-                    -- 'single', 'double', 'rounded' or 'solid'
-                    -- can also be a list of 8 characters, see :h wilder#popupmenu_border_theme() for more details
-                    border = 'rounded',
-                })
-            ))
-        end,
-    }
+	{
+		"nvim-telescope/telescope.nvim",
+		tag = "v0.2.0",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local builtin = require("telescope.builtin")
+			vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
+			vim.keymap.set("n", "<C-p>", builtin.git_files, {})
+			vim.keymap.set("n", "<leader>pg", builtin.live_grep, {})
+			vim.keymap.set("n", "<leader>ps", function()
+				builtin.grep_string({ search = vim.fn.input("Grep > ") })
+			end)
+			vim.keymap.set("n", "<leader>vh", builtin.help_tags, {})
+		end,
+	},
 }
-

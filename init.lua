@@ -1,7 +1,4 @@
 require("config.lazy")
 require("config.remap")
 require("config.set")
-require("packages.vague")
-require("packages.telescope")
-require("packages.lualine")
-require("packages.lsp")
+require("config.lsp")

@@ -1,0 +1,41 @@
+# Only try to load Visual Studio DevShell if VS is installed
+$vsPath = &"${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationpath 2>$null
+
+if ($vsPath) {
+    Write-Host "Microsoft Visual Studio path = '$vsPath'"
+    $devShellModule = Get-ChildItem $vsPath -Recurse -File -Filter Microsoft.VisualStudio.DevShell.dll -ErrorAction SilentlyContinue | Select-Object -First 1
+    
+    if ($devShellModule) {
+        Import-Module $devShellModule.FullName
+        Enter-VsDevShell -VsInstallPath $vsPath -SkipAutomaticLocation -DevCmdArguments '-arch=x64'
+    }
+} else {
+    Write-Host "Visual Studio not found - skipping DevShell initialization" -ForegroundColor Yellow
+}
+#oh-my-posh init pwsh --config 'https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/atomicBit.omp.json' | Invoke-Expression
+# Load Terminal-Icons
+Import-Module Terminal-Icons
+
+# Better history handling
+Set-PSReadLineOption -HistorySaveStyle SaveIncrementally
+Set-PSReadLineOption -PredictionSource History
+Set-PSReadLineOption -HistorySearchCursorMovesToEnd
+Set-PSReadLineOption -MaximumHistoryCount 10000
+
+# Linux-style history search (Up/Down arrow)
+Set-PSReadLineKeyHandler -Key UpArrow `
+  -Function HistorySearchBackward
+Set-PSReadLineKeyHandler -Key DownArrow `
+  -Function HistorySearchForward
+
+# Ctrl+R = reverse history search (bash-style)
+Set-PSReadLineKeyHandler -Chord Ctrl+r `
+  -Function ReverseSearchHistory
+
+# Better tab completion (like bash)
+Set-PSReadLineKeyHandler -Key Tab `
+  -Function MenuComplete
+
+# Optional: show history predictions inline
+Set-PSReadLineOption -PredictionViewStyle InlineView
+

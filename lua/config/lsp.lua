@@ -9,9 +9,26 @@ require('mason-lspconfig').setup({
 
 vim.lsp.config("roslyn", {})
 
--- Configure Dart LSP
+-- Configure Dart LSP. Prefer the SDK selected by FVM for each project instead
+-- of relying on a machine-wide Dart executable.
 vim.lsp.config("dartls", {
-    cmd = { "/opt/homebrew/bin/dart", 'language-server', '--protocol=lsp' },
+    cmd = function(dispatchers, config)
+        local project_dart = config.root_dir
+            and vim.fs.joinpath(config.root_dir, ".fvm", "flutter_sdk", "bin", "dart")
+        local dart = project_dart and vim.fn.executable(project_dart) == 1
+            and project_dart
+            or vim.fn.exepath("dart")
+
+        if dart == "" then
+            error("dartls: no Dart SDK found (checked the project's FVM SDK and PATH)")
+        end
+
+        return vim.lsp.rpc.start(
+            { dart, "language-server", "--protocol=lsp" },
+            dispatchers,
+            { cwd = config.root_dir }
+        )
+    end,
     filetypes = { "dart" },
     root_markers = { "pubspec.yaml" },
 })

@@ -12,6 +12,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
   callback = function(args)
     local opts = { buffer = args.buf }
     vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
+
+    -- go to definition in a new tab
+    local function definition_in_tab()
+      vim.lsp.buf.definition({
+        on_list = function(list)
+          if vim.tbl_isempty(list.items) then
+            vim.notify('No definition found', vim.log.levels.WARN)
+            return
+          end
+          vim.cmd('tab split')
+          vim.fn.setqflist({}, ' ', list)
+          vim.cmd('cfirst')
+        end,
+      })
+    end
+    vim.keymap.set('n', '<C-g>d', definition_in_tab, opts)
+    vim.keymap.set('n', '<M-g>d', definition_in_tab, opts)
     vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
     vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
@@ -68,3 +85,6 @@ end)
 
 -- UNDO tree
 vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
+
+-- send visual selection + a typed prompt to a running Claude Code instance
+vim.keymap.set("v", "<leader>cs", ":<C-u>lua require('claude_send').send_selection()<CR>", { silent = true })

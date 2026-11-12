@@ -2,8 +2,14 @@ return {
 	{
 		"nvim-telescope/telescope.nvim",
 		tag = "v0.2.0",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-lua/popup.nvim",
+			"nvim-telescope/telescope-fzy-native.nvim",
+		},
 		config = function()
+			require("telescope").load_extension("fzy_native")
+
 			local builtin = require("telescope.builtin")
 			vim.keymap.set("n", "<leader>pf", builtin.find_files, {})
 			vim.keymap.set("n", "<C-p>", builtin.git_files, {})

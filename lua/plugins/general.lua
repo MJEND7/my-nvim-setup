@@ -126,6 +126,13 @@ return {
 				enabled = true,
 				show_start = false,
 				show_end = false,
+				include = {
+					-- dart's built-in scope node types only cover {} blocks;
+					-- add list/argument literals so [] and () scopes highlight too
+					node_type = {
+						dart = { "list_literal", "arguments" },
+					},
+				},
 			},
 		},
 	},

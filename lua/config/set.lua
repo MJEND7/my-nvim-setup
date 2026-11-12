@@ -14,6 +14,7 @@ vim.opt.wrap = false
 
 vim.opt.swapfile = false
 vim.opt.backup = false
+vim.opt.writebackup = false  -- prevents .cs~ files that confuse dotnet watch
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 
@@ -34,5 +35,16 @@ vim.opt.updatetime = 50
 vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     pcall(vim.treesitter.start)
+  end,
+})
+
+-- dart format / flutter format use 2-space indentation; without this,
+-- indent guides (ibl) are drawn at the wrong columns since they follow shiftwidth
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "dart",
+  callback = function()
+    vim.opt_local.shiftwidth = 2
+    vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
   end,
 })
